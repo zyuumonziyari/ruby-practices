@@ -33,16 +33,14 @@ def print_calendar
     puts "日 月 火 水 木 金 土"
     print "   " * starting_day
     (first_day..last_day).each do |date|
-      # ここの中では dateは各日付をあらわすDateオブジェクトになります
-      if requested_month == this_month && requested_year == this_year && date.day == today
+      if date == Date.today
         print "\e[7m#{date.day.to_s.rjust(2)}\e[0m "
       else
         print date.day.to_s.rjust(2) + " "
       end
-      puts if date.wday == 6
+      puts if date.saturday?
     end
     puts
   end
   
   print_calendar
-  
