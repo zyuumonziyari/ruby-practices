@@ -2,47 +2,34 @@
 
 score = ARGV[0]
 scores = score.split(',')
-shots = []
-scores.each do |s|
-  shots << if s == 'X'
-             10
-           else
-             s.to_i
-           end
-end
+shots = scores.map { |s| s == 'X' ? 10 : s.to_i }
+frame_idx = 0
+first_done = false
+LAST_FLAME = 10
+result = Array.new(LAST_FLAME, 0)
 
-frame = 0
-max_frame = 10
-count = 0
-result = [0] * max_frame
-
-shots.length.times do |i|
-  if frame + 1 != max_frame
-
-    if shots[i] == 10
-      if count.zero?
-        count = 1
-        result[frame] = shots[i] + shots[i + 1] + shots[i + 2]
+shots.each_with_index do |shot, i|
+  if frame_idx + 1 != LAST_FLAME
+    if shot == 10
+      if !first_done
+        first_done = true
+        result[frame_idx] = shots[i, 3].sum
       else
-        result[frame] = shots[i] + shots[i + 1]
+        result[frame_idx] = shots[i, 2].sum
       end
-
-    elsif shots[i] + result[frame] == 10
-      result[frame] = result[frame] + shots[i] + shots[i + 1]
+    elsif shot + result[frame_idx] == 10
+      result[frame_idx] = result[frame_idx] + shots[i, 2].sum
     else
-      result[frame] += shots[i]
+      result[frame_idx] += shot
     end
-
-    count += 1
-
-    if count == 2
-      count = 0
-      frame += 1
+    if first_done
+      frame_idx += 1
+      first_done = false
+    else
+      first_done = true
     end
-
   else
-    result[frame] += shots[i]
+    result[frame_idx] += shot
   end
 end
-print result
 puts result.sum
