@@ -1,17 +1,8 @@
 # frozen_string_literal: true
 
-require 'optparse'
 COLUMNS = 3
 
-options = {}
-OptionParser.new do |opts|
-  opts.on('-f', '--folder [FOLDER]') do |folder|
-    options[:folder] = folder
-  end
-end.parse!
-
-def count_current_directories(options)
-  @current_directories = Dir.entries(options[:folder]).reject { |entry| entry.start_with?('.') }.sort if options[:folder]
+def count_current_directories
   @current_directories = Dir.entries(Dir.pwd).reject { |entry| entry.start_with?('.') }.sort
   @current_directories_numbers = @current_directories.count
 end
@@ -24,5 +15,5 @@ def output_current_directories
   end
 end
 
-count_current_directories(options)
+count_current_directories
 output_current_directories
