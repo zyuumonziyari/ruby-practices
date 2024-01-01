@@ -4,12 +4,11 @@ COLUMNS = 3
 
 def count_current_directories
   current_directories = Dir.entries(Dir.pwd).reject { |entry| entry.start_with?('.') }.sort
-  current_directories_numbers = current_directories.count
-  output_current_directories(current_directories, current_directories_numbers)
+  output_current_directories(current_directories)
 end
 
-def output_current_directories(current_directories, current_directories_numbers)
-  max_rows = (current_directories_numbers / COLUMNS.to_f).ceil
+def output_current_directories(current_directories)
+  max_rows = (current_directories.count / COLUMNS.to_f).ceil
   max_column_widths = (0...COLUMNS).map do |col|
     column_values = (0...max_rows).map { |row| current_directories[row + col * max_rows] }
     column_values.compact.map(&:length).max || 0
