@@ -1,17 +1,9 @@
 # frozen_string_literal: true
 
-require 'optparse'
-
 COLUMNS = 3
 
-options = { show_hidden: false }
-opt = OptionParser.new
-opt.on('-a') { options[:show_hidden] = true }
-opt.parse(ARGV)
-
-def count_current_directories(show_hidden)
-  entries = Dir.entries(Dir.pwd)
-  current_directories = entries.reject { |entry| entry.start_with?('.') && !show_hidden }.sort
+def count_current_directories
+  current_directories = Dir.entries(Dir.pwd).reject { |entry| entry.start_with?('.') }.sort
   output_current_directories(current_directories)
 end
 
@@ -28,4 +20,4 @@ def output_current_directories(current_directories)
   end
 end
 
-count_current_directories(options[:show_hidden])
+count_current_directories
