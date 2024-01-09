@@ -4,15 +4,18 @@ require 'optparse'
 
 COLUMNS = 3
 
-options = { show_hidden: false }
+options = { show_hidden: false, reverse_sort: false }
 opt = OptionParser.new
 opt.on('-a') { options[:show_hidden] = true }
-opt.parse(ARGV)
+opt.on('-r') { options[:reverse_sort] = true }
 
-def count_current_directories(show_hidden)
+opt.parse(ARGV)
+def count_current_directories(show_hidden, reverse_sort)
   file_names = Dir.entries(Dir.pwd)
   file_names = file_names.reject { |entry| entry.start_with?('.') } unless show_hidden
   file_names = file_names.sort
+  file_names = file_names.reverse if reverse_sort
+
   output_current_directories(file_names)
 end
 
@@ -29,4 +32,4 @@ def output_current_directories(file_names)
   end
 end
 
-count_current_directories(options[:show_hidden])
+count_current_directories(options[:show_hidden], options[:reverse_sort])
