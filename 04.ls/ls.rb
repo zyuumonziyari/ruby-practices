@@ -1,22 +1,54 @@
 # frozen_string_literal: true
 
 require 'optparse'
+require 'etc'
 
 COLUMNS = 3
 
-options = { show_hidden: false, reverse_sort: false }
+options = { show_permission: false }
 opt = OptionParser.new
-opt.on('-a') { options[:show_hidden] = true }
-opt.on('-r') { options[:reverse_sort] = true }
+opt.on('-l') { options[:show_permission] = true }
+opt.parse!(ARGV)
 
-opt.parse(ARGV)
-def count_current_directories(show_hidden, reverse_sort)
-  file_names = Dir.entries(Dir.pwd)
-  file_names = file_names.reject { |entry| entry.start_with?('.') } unless show_hidden
-  file_names = file_names.sort
-  file_names = file_names.reverse if reverse_sort
+def count_block_num(file_names)
+  blocksize = 8192
+  total_block_num = 0
+  file_names.each do |file_name|
+    fs = File::Stat.new(file_name)
+    block_num = (fs.size / blocksize.to_f).ceil
+    total_block_num += block_num * 8
+  end
+  puts "total #{total_block_num}"
+end
 
-  output_current_directories(file_names)
+def output_l_option(file_names)
+  title_max_length = 0
+  file_names.each do |file_name|
+    fs = File::Stat.new(file_name)
+    title_length = fs.size.to_s.length
+    title_max_length = [title_max_length, title_length].max
+    permissions = mode_to_permission(fs.mode)
+    owner = Etc.getpwuid(fs.uid).name
+    group = Etc.getgrgid(fs.gid).name
+    size = fs.size
+    mtime = fs.mtime.strftime('%m %d %H:%M')
+    basename = File.basename(file_name)
+    puts "#{permissions}  #{fs.nlink} #{owner}  #{group}  #{size.to_s.rjust(title_max_length)} #{mtime} #{basename}"
+  end
+end
+
+def mode_to_permission(mode)
+  perms = {
+    '0' => '---',
+    '1' => '--x',
+    '2' => '-w-',
+    '3' => '-wx',
+    '4' => 'r--',
+    '5' => 'r-x',
+    '6' => '-rw-',
+    '7' => '-rwx'
+  }
+  mode.to_s(8)[-3..].chars.map { |digit| perms[digit] }.join
 end
 
 def output_current_directories(file_names)
@@ -32,4 +64,13 @@ def output_current_directories(file_names)
   end
 end
 
-count_current_directories(options[:show_hidden], options[:reverse_sort])
+file_names = Dir.entries(Dir.pwd)
+file_names = file_names.sort
+file_names = file_names.reject { |entry| entry.start_with?('.') }
+
+if options[:show_permission]
+  count_block_num(file_names)
+  output_l_option(file_names)
+else
+  output_current_directories(file_names)
+end
