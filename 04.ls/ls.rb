@@ -5,7 +5,7 @@ require 'etc'
 
 COLUMNS = 3
 BLOCKSIZE = 8192
-PERMS = {
+PERMISSIONS = {
   '0' => '---',
   '1' => '--x',
   '2' => '-w-',
@@ -48,7 +48,7 @@ def output_l_option(file_names)
 end
 
 def mode_to_permission(mode)
-  mode.to_s(8)[-3..].chars.map { |digit| PERMS[digit] }.join
+  mode.to_s(8)[-3..].chars.map { |digit| PERMISSIONS[digit] }.join
 end
 
 def output_current_directories(file_names)
