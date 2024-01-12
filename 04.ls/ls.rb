@@ -4,18 +4,28 @@ require 'optparse'
 require 'etc'
 
 COLUMNS = 3
+BLOCKSIZE = 8192
+PERMS = {
+  '0' => '---',
+  '1' => '--x',
+  '2' => '-w-',
+  '3' => '-wx',
+  '4' => 'r--',
+  '5' => 'r-x',
+  '6' => '-rw-',
+  '7' => '-rwx'
+}.freeze
 
-options = { show_permission: false }
+options = { show_long_format: false }
 opt = OptionParser.new
-opt.on('-l') { options[:show_permission] = true }
+opt.on('-l') { options[:show_long_format] = true }
 opt.parse!(ARGV)
 
-def count_block_num(file_names)
-  blocksize = 8192
+def output_block_num(file_names)
   total_block_num = 0
   file_names.each do |file_name|
     fs = File::Stat.new(file_name)
-    block_num = (fs.size / blocksize.to_f).ceil
+    block_num = (fs.size / BLOCKSIZE.to_f).ceil
     total_block_num += block_num * 8
   end
   puts "total #{total_block_num}"
@@ -38,17 +48,7 @@ def output_l_option(file_names)
 end
 
 def mode_to_permission(mode)
-  perms = {
-    '0' => '---',
-    '1' => '--x',
-    '2' => '-w-',
-    '3' => '-wx',
-    '4' => 'r--',
-    '5' => 'r-x',
-    '6' => '-rw-',
-    '7' => '-rwx'
-  }
-  mode.to_s(8)[-3..].chars.map { |digit| perms[digit] }.join
+  mode.to_s(8)[-3..].chars.map { |digit| PERMS[digit] }.join
 end
 
 def output_current_directories(file_names)
@@ -68,8 +68,8 @@ file_names = Dir.entries(Dir.pwd)
 file_names = file_names.sort
 file_names = file_names.reject { |entry| entry.start_with?('.') }
 
-if options[:show_permission]
-  count_block_num(file_names)
+if options[:show_long_format]
+  output_block_num(file_names)
   output_l_option(file_names)
 else
   output_current_directories(file_names)
