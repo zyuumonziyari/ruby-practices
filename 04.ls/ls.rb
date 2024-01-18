@@ -63,7 +63,7 @@ def output_l_option(file_names)
     if File.directory?(file_name)
       puts "d#{permissions}  #{fs.nlink.to_s.rjust(link_max_length)} #{owner}  #{group}  #{fs.size.to_s.rjust(title_max_length)} #{mtime} #{basename}"
     else
-      puts "-#{permissions}  #{link.to_s.rjust(link_max_length)} #{owner}  #{group}  #{size.to_s.rjust(title_max_length)} #{mtime} #{basename}"
+      puts "-#{permissions}  #{fs.nlink.to_s.rjust(link_max_length)} #{owner}  #{group}  #{fs.size.to_s.rjust(title_max_length)} #{mtime} #{basename}"
     end
   end
 end
