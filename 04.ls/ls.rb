@@ -60,11 +60,8 @@ def output_l_option(file_names)
     group = Etc.getgrgid(fs.gid).name
     mtime = fs.mtime.strftime('%m %d %H:%M')
     basename = File.basename(file_name)
-    if File.directory?(file_name)
-      puts "d#{permissions}  #{fs.nlink.to_s.rjust(link_max_length)} #{owner}  #{group}  #{fs.size.to_s.rjust(title_max_length)} #{mtime} #{basename}"
-    else
-      puts "-#{permissions}  #{fs.nlink.to_s.rjust(link_max_length)} #{owner}  #{group}  #{fs.size.to_s.rjust(title_max_length)} #{mtime} #{basename}"
-    end
+    directory_sign = File.directory?(file_name) ? 'd' : '-'
+    puts "#{directory_sign}#{permissions}  #{fs.nlink.to_s.rjust(link_max_length)} #{owner}  #{group}  #{fs.size.to_s.rjust(title_max_length)} #{mtime} #{basename}"
   end
 end
 
