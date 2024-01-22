@@ -27,12 +27,7 @@ def file_statistics(file_path)
   byte_count = file_content.bytesize
   char_count = file_content.length
   file.close
-  {
-    line_count:,
-    word_count:,
-    byte_count:,
-    char_count:
-  }
+  { line_count:, word_count:, byte_count:, char_count: }
 end
 
 def standard_output_statistics(content)
@@ -40,26 +35,22 @@ def standard_output_statistics(content)
   word_count = content.split(/\s+/).size
   byte_count = content.bytesize
   char_count = content.length
-  {
-    line_count:,
-    word_count:,
-    byte_count:,
-    char_count:
-  }
+  { line_count:, word_count:, byte_count:, char_count: }
 end
 
-def process_stdin
+def process_stdin(options)
   content = $stdin.read
   result = standard_output_statistics(content)
   print "\n"
-  print "#{result[:line_count]} "
-  print "#{result[:word_count]} "
-  print "#{result[:byte_count]} "
+  print "#{result[:line_count]} " if options[:show_lines_count]
+  print "#{result[:word_count]} " if options[:show_words_count]
+  print "#{result[:byte_count]} " if options[:show_bytes_count]
+  print "#{result[:char_count]} " if options[:show_chars_count]
   print "\n"
 end
 
 if !$stdin.tty?
-  process_stdin
+  process_stdin(options)
 elsif file_paths.empty?
   alert_none_file_paths
 elsif options[:show_lines_count] || options[:show_words_count] || options[:show_bytes_count] || options[:show_chars_count]
