@@ -2,88 +2,60 @@
 
 require 'optparse'
 
-options = { show_lines_count: false, show_words_count: false, show_bytes_count: false, show_chars_count: false }
+FILE_PATHS = ARGV
+
+options = { show_line_count: false, show_word_count: false, show_byte_count: false }
 opt = OptionParser.new
-opt.on('-l') { options[:show_lines_count] = true }
-opt.on('-w') { options[:show_words_count] = true }
-opt.on('-c') { options[:show_bytes_count] = true }
-opt.on('-m') { options[:show_chars_count] = true }
+opt.on('-l') { options[:show_line_count] = true }
+opt.on('-w') { options[:show_word_count] = true }
+opt.on('-c') { options[:show_byte_count] = true }
 opt.parse!(ARGV)
-file_paths = ARGV
-total_lines_count = 0
-total_words_count = 0
-total_bytes_count = 0
-total_chars_count = 0
+
+if !options[:show_line_count] && !options[:show_word_count] && !options[:show_byte_count]
+  options[:show_line_count] = true
+  options[:show_word_count] = true
+  options[:show_byte_count] = true
+end
 
 def alert_none_file_paths
   puts 'ファイルパスを指定してください。'
 end
 
-def file_statistics(file_path)
-  file = File.open(file_path, 'r')
-  file_content = file.read
-  line_count = file_content.lines.size
-  word_count = file_content.split(/\s+/).size
-  byte_count = file_content.bytesize
-  char_count = file_content.length
-  file.close
-  { line_count:, word_count:, byte_count:, char_count: }
+def process_stdin(options)
+  content = $stdin.read
+  output_statistics(content, options)
 end
 
-def standard_output_statistics(content)
+def output_statistics(content, options)
   line_count = content.lines.size
   word_count = content.split(/\s+/).size
   byte_count = content.bytesize
-  char_count = content.length
-  { line_count:, word_count:, byte_count:, char_count: }
+  count_contents = { line_count:, word_count:, byte_count: }
+  count_contents.each do |key, value|
+    print " #{value} " if options[:"show_#{key}"]
+  end
 end
 
-def process_stdin(options)
-  content = $stdin.read
-  result = standard_output_statistics(content)
-  print "\n"
-  print "#{result[:line_count]} " if options[:show_lines_count]
-  print "#{result[:word_count]} " if options[:show_words_count]
-  print "#{result[:byte_count]} " if options[:show_bytes_count]
-  print "#{result[:char_count]} " if options[:show_chars_count]
-  print "\n"
+def output_multiple_statistics(total_counts, options)
+  total_counts.each do |key, value|
+    print " #{value}" if options[:"show_#{key}"]
+  end
 end
 
 if !$stdin.tty?
   process_stdin(options)
-elsif file_paths.empty?
+elsif FILE_PATHS.empty?
   alert_none_file_paths
-elsif options[:show_lines_count] || options[:show_words_count] || options[:show_bytes_count] || options[:show_chars_count]
-  file_paths.each do |file_path|
-    result = file_statistics(file_path)
-    total_lines_count += result[:line_count]
-    total_words_count += result[:word_count]
-    total_bytes_count += result[:byte_count]
-    total_chars_count += result[:char_count]
-
-    print "\n"
-    print "#{result[:line_count]} " if options[:show_lines_count]
-    print "#{result[:word_count]} " if options[:show_words_count]
-    print "#{result[:byte_count]} " if options[:show_bytes_count]
-    print "#{result[:char_count]} " if options[:show_chars_count]
-    print "#{file_path} "
-  end
-  if file_paths.length > 1
-    print "\n"
-    print "#{total_lines_count} " if options[:show_lines_count]
-    print "#{total_words_count} " if options[:show_words_count]
-    print "#{total_bytes_count} " if options[:show_bytes_count]
-    print "#{total_chars_count} " if options[:show_chars_count]
-    print 'total'
-    print "\n"
-  end
 else
-  file_paths.each do |file_path|
-    result = file_statistics(file_path)
-    total_lines_count += result[:line_count]
-    total_words_count += result[:word_count]
-    total_bytes_count += result[:byte_count]
-    print "\n#{result[:line_count]}  #{result[:word_count]}  #{result[:byte_count]}  #{file_path} "
+  total_counts = { line_count: 0, word_count: 0, byte_count: 0 }
+  FILE_PATHS.each do |file_path|
+    file_content = File.read(file_path)
+    file_counts = output_statistics(file_content, options)
+    total_counts.each_key do |key|
+      total_counts[key] += file_counts[key] if options[:"show_#{key}"]
+    end
+    print " #{file_path}\n"
   end
-  print "\n#{total_lines_count}  #{total_words_count}  #{total_bytes_count}  total" if file_paths.length > 1
+  output_multiple_statistics(total_counts, options) if FILE_PATHS.length > 1
+  print '  total'
 end
