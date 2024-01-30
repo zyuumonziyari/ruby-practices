@@ -2,14 +2,13 @@
 
 require 'optparse'
 
-FILE_PATHS = ARGV
-
 options = { show_line_count: false, show_word_count: false, show_byte_count: false }
 opt = OptionParser.new
 opt.on('-l') { options[:show_line_count] = true }
 opt.on('-w') { options[:show_word_count] = true }
 opt.on('-c') { options[:show_byte_count] = true }
 opt.parse!(ARGV)
+file_paths = ARGV
 
 if !options[:show_line_count] && !options[:show_word_count] && !options[:show_byte_count]
   options[:show_line_count] = true
@@ -44,11 +43,11 @@ end
 
 if !$stdin.tty?
   process_stdin(options)
-elsif FILE_PATHS.empty?
+elsif file_paths.empty?
   alert_none_file_paths
 else
   total_counts = { line_count: 0, word_count: 0, byte_count: 0 }
-  FILE_PATHS.each do |file_path|
+  file_paths.each do |file_path|
     file_content = File.read(file_path)
     file_counts = output_statistics(file_content, options)
     total_counts.each_key do |key|
@@ -56,6 +55,6 @@ else
     end
     print " #{file_path}\n"
   end
-  output_multiple_statistics(total_counts, options) if FILE_PATHS.length > 1
+  output_multiple_statistics(total_counts, options) if file_paths.length > 1
   print '  total'
 end
