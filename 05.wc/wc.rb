@@ -10,10 +10,11 @@ opt.on('-c') { options[:show_byte_count] = true }
 opt.parse!(ARGV)
 file_paths = ARGV
 
-options.values.all?(&:!)
-options[:show_line_count] = true
-options[:show_word_count] = true
-options[:show_byte_count] = true
+if options.values.all?(&:!)
+  options[:show_line_count] = true
+  options[:show_word_count] = true
+  options[:show_byte_count] = true
+end
 
 def alert_none_file_paths
   puts 'ファイルパスを指定してください。'
