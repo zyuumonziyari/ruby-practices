@@ -20,6 +20,6 @@ class Frame
   end
 
   def spare?
-    @shots[0].score + @shots[1].score == 10
+    !strike? && @shots[0..1].sum(&:score) == 10
   end
 end
