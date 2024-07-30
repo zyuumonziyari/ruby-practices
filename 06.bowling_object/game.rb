@@ -65,5 +65,4 @@ class Game
 end
 
 marks = ARGV[0].split(',')
-game = Game.new(marks)
-puts game.score
+puts Game.new(marks).score
