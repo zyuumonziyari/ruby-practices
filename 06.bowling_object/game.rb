@@ -1,18 +1,17 @@
 # frozen_string_literal: true
 
 require_relative 'frame'
+require 'debug'
 
 class Game
-  LAST_FRAME = 10
+  LAST_FRAME = 9
 
   def initialize(marks)
     @frames = []
-    frame_idx = 0
-    while frame_idx < LAST_FRAME
+    0.upto(9) do |frame_idx|
       frame = Frame.new(frame_idx)
       frame.add_shot(marks)
       @frames << frame
-      frame_idx += 1
     end
   end
 

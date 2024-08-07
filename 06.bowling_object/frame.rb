@@ -33,7 +33,7 @@ class Frame
   private
 
   def complete?
-    if @frame_idx + 1 != Game::LAST_FRAME
+    if @frame_idx != Game::LAST_FRAME
       strike? || @shots.size == 2
     else
       @shots.size == 3 || (@shots.size == 2 && !strike? && !spare?)
