@@ -18,8 +18,10 @@ class Frame
     end
   end
 
-  def score(next_frame, second_next_frame)
+  def score(frames)
     total_score = base_score
+    next_frame = frames[frame_idx + 1]
+    second_next_frame = frames[frame_idx + 2]
     if next_frame
       if strike?
         total_score += strike_bonus(next_frame, second_next_frame)
