@@ -12,8 +12,7 @@ class Frame
 
   def add_shot(marks)
     loop do
-      shot = Shot.new(marks.shift)
-      @scores << shot
+      @scores << Shot.new(marks.shift)
       break if complete?
     end
   end
@@ -43,28 +42,28 @@ class Frame
   end
 
   def base_score
-    @scores.score.sum
+    @scores.sum(&:score)
   end
 
   def strike?
-    @scores.first == 10
+    @scores.first.score == 10
   end
 
   def spare?
-    !strike? && @scores[0..1].sum == 10
+    !strike? && @scores[0..1].sum(&:score) == 10
   end
 
   def strike_bonus(next_frame, second_next_frame)
-    bonus = next_frame.scores.first
+    bonus = next_frame.scores.first.score
     if next_frame.scores.size > 1
-      bonus += next_frame.scores[1]
+      bonus += next_frame.scores[1].score
     elsif second_next_frame
-      bonus += second_next_frame.scores.first
+      bonus += second_next_frame.scores.first.score
     end
     bonus
   end
 
   def spare_bonus(next_frame)
-    next_frame.scores.first
+    next_frame.scores.first.score
   end
 end
