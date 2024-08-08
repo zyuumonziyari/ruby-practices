@@ -3,17 +3,17 @@
 require_relative 'shot'
 
 class Frame
-  attr_reader :shots, :frame_idx
+  attr_reader :scores, :frame_idx
 
   def initialize(frame_idx)
-    @shots = []
+    @scores = []
     @frame_idx = frame_idx
   end
 
   def add_shot(marks)
     loop do
       shot = Shot.new(marks.shift)
-      @shots << shot.score
+      @scores << shot
       break if complete?
     end
   end
@@ -36,35 +36,35 @@ class Frame
 
   def complete?
     if @frame_idx != Game::LAST_FRAME
-      strike? || @shots.size == 2
+      strike? || @scores.size == 2
     else
-      @shots.size == 3 || (@shots.size == 2 && !strike? && !spare?)
+      @scores.size == 3 || (@scores.size == 2 && !strike? && !spare?)
     end
   end
 
   def base_score
-    @shots.sum
+    @scores.score.sum
   end
 
   def strike?
-    @shots.first == 10
+    @scores.first == 10
   end
 
   def spare?
-    !strike? && @shots[0..1].sum == 10
+    !strike? && @scores[0..1].sum == 10
   end
 
   def strike_bonus(next_frame, second_next_frame)
-    bonus = next_frame.shots.first
-    if next_frame.shots.size > 1
-      bonus += next_frame.shots[1]
+    bonus = next_frame.scores.first
+    if next_frame.scores.size > 1
+      bonus += next_frame.scores[1]
     elsif second_next_frame
-      bonus += second_next_frame.shots.first
+      bonus += second_next_frame.scores.first
     end
     bonus
   end
 
   def spare_bonus(next_frame)
-    next_frame.shots.first
+    next_frame.scores.first
   end
 end
