@@ -25,9 +25,9 @@ class Frame
   def score(frames)
     @scores.sum(&:score) + bonus_score(frames)
   end
-  
+
   private
-  
+
   def complete?
     if @frame_idx != Game::LAST_FRAME
       strike? || @scores.size == MAX_SHOTS_IN_REGULAR_FRAME
