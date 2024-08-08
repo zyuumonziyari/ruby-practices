@@ -35,7 +35,7 @@ class Frame
     next_frame = frames[frame_idx + 1]
     second_next_frame = frames[frame_idx + 2]
 
-    return 0 unless next_frame
+    return 0 if !next_frame
 
     if strike?
       strike_bonus(next_frame, second_next_frame)
