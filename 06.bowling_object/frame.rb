@@ -3,6 +3,9 @@
 require_relative 'shot'
 
 class Frame
+  MAX_SHOTS_IN_LAST_FRAME = 3
+  MAX_SHOTS_IN_REGULAR_FRAME = 2
+
   attr_reader :scores, :frame_idx
 
   def initialize(frame_idx)
@@ -22,16 +25,16 @@ class Frame
   def score(frames)
     @scores.sum(&:score) + bonus_score(frames)
   end
-
-  def complete?
-    if @frame_idx != Game::LAST_FRAME
-      strike? || @scores.size == 2
-    else
-      @scores.size == 3 || (@scores.size == 2 && !strike? && !spare?)
-    end
-  end
   
   private
+  
+  def complete?
+    if @frame_idx != Game::LAST_FRAME
+      strike? || @scores.size == MAX_SHOTS_IN_REGULAR_FRAME
+    else
+      @scores.size == MAX_SHOTS_IN_LAST_FRAME || (@scores.size == MAX_SHOTS_IN_REGULAR_FRAME && !strike? && !spare?)
+    end
+  end
 
   def bonus_score(frames)
     next_frame = frames[frame_idx + 1]
