@@ -18,17 +18,7 @@ class Frame
   end
 
   def score(frames)
-    total_score = base_score
-    next_frame = frames[frame_idx + 1]
-    second_next_frame = frames[frame_idx + 2]
-    if next_frame
-      if strike?
-        total_score += strike_bonus(next_frame, second_next_frame)
-      elsif spare?
-        total_score += spare_bonus(next_frame)
-      end
-    end
-    total_score
+    @scores.sum(&:score) + bonus_score(frames)
   end
 
   private
@@ -41,8 +31,19 @@ class Frame
     end
   end
 
-  def base_score
-    @scores.sum(&:score)
+  def bonus_score(frames)
+    next_frame = frames[frame_idx + 1]
+    second_next_frame = frames[frame_idx + 2]
+
+    return 0 unless next_frame
+
+    if strike?
+      strike_bonus(next_frame, second_next_frame)
+    elsif spare?
+      spare_bonus(next_frame)
+    else
+      0
+    end
   end
 
   def strike?
