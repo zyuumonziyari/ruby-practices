@@ -47,7 +47,7 @@ class Frame
   end
 
   def strike?
-    @scores.first.score == 10
+    @scores.first.strike?
   end
 
   def spare?
