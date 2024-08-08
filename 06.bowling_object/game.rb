@@ -8,9 +8,10 @@ class Game
 
   def initialize(marks)
     @frames = []
-    0.upto(9) do |frame_idx|
+    index = 0
+    0.upto(LAST_FRAME) do |frame_idx|
       frame = Frame.new(frame_idx)
-      frame.add_shot(marks)
+      index = frame.add_shot(marks, index)
       @frames << frame
     end
   end

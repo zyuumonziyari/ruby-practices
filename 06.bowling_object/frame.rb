@@ -10,18 +10,18 @@ class Frame
     @frame_idx = frame_idx
   end
 
-  def add_shot(marks)
+  def add_shot(marks, score_idx)
     loop do
-      @scores << Shot.new(marks.shift)
+      @scores << Shot.new(marks[score_idx])
+      score_idx += 1
       break if complete?
     end
+    score_idx
   end
 
   def score(frames)
     @scores.sum(&:score) + bonus_score(frames)
   end
-
-  private
 
   def complete?
     if @frame_idx != Game::LAST_FRAME
@@ -30,6 +30,8 @@ class Frame
       @scores.size == 3 || (@scores.size == 2 && !strike? && !spare?)
     end
   end
+  
+  private
 
   def bonus_score(frames)
     next_frame = frames[frame_idx + 1]
