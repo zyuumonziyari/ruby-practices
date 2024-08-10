@@ -32,7 +32,7 @@ class Frame
     if @frame_idx != Game::LAST_FRAME
       strike? || @scores.size == MAX_SHOTS_IN_REGULAR_FRAME
     else
-      @scores.size == MAX_SHOTS_IN_LAST_FRAME || (@scores.size == MAX_SHOTS_IN_REGULAR_FRAME && !strike? && !spare?)
+      @scores.size == (strike? || spare? ? MAX_SHOTS_IN_LAST_FRAME : MAX_SHOTS_IN_REGULAR_FRAME)
     end
   end
 
