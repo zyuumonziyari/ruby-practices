@@ -23,7 +23,7 @@ class Frame
   end
 
   def score(frames)
-    @scores.sum(&:score) + bonus_score(frames)
+    @frame_idx != LAST_FRAME ? @scores.sum(&:score) + bonus_score(frames) : @scores.sum(&:score)
   end
 
   private
@@ -39,9 +39,6 @@ class Frame
   def bonus_score(frames)
     next_frame = frames[@frame_idx + 1]
     second_next_frame = frames[@frame_idx + 2]
-
-    return 0 if !next_frame
-
     if strike?
       strike_bonus(next_frame, second_next_frame)
     elsif spare?
