@@ -8,7 +8,7 @@ class Game
     mark_idx = 0
     0.upto(Frame::LAST_FRAME) do |frame_idx|
       frame = Frame.new(frame_idx)
-      mark_idx += frame.add_shot(marks[mark_idx..-1])
+      mark_idx += frame.add_shot(marks[mark_idx..])
       @frames << frame
     end
   end
