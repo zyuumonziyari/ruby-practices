@@ -7,7 +7,7 @@ class Frame
   MAX_SHOTS_IN_LAST_FRAME = 3
   MAX_SHOTS_IN_REGULAR_FRAME = 2
 
-  attr_reader :scores, :frame_idx
+  attr_reader :scores
 
   def initialize(frame_idx)
     @scores = []
@@ -38,8 +38,8 @@ class Frame
   end
 
   def bonus_score(frames)
-    next_frame = frames[frame_idx + 1]
-    second_next_frame = frames[frame_idx + 2]
+    next_frame = frames[@frame_idx + 1]
+    second_next_frame = frames[@frame_idx + 2]
 
     return 0 if !next_frame
 
