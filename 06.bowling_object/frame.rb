@@ -13,13 +13,13 @@ class Frame
     @frame_idx = frame_idx
   end
 
-  def add_shot(marks, score_idx)
+  def add_shot(marks, mark_idx)
     loop do
-      @scores << Shot.new(marks[score_idx])
-      score_idx += 1
+      @scores << Shot.new(marks[mark_idx])
+      mark_idx += 1
       break if complete?
     end
-    score_idx
+    mark_idx
   end
 
   def score(frames)

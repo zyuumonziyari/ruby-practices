@@ -7,10 +7,10 @@ class Game
 
   def initialize(marks)
     @frames = []
-    score_idx = 0
+    mark_idx = 0
     0.upto(LAST_FRAME) do |frame_idx|
       frame = Frame.new(frame_idx)
-      score_idx = frame.add_shot(marks, score_idx)
+      mark_idx = frame.add_shot(marks, mark_idx)
       @frames << frame
     end
   end
