@@ -58,11 +58,7 @@ class Frame
 
   def strike_bonus(next_frame, second_next_frame)
     bonus = next_frame.scores[0].score
-    if next_frame.scores.size > 1
-      bonus + next_frame.scores[1].score
-    else
-      bonus + second_next_frame.scores[0].score
-    end
+    next_frame.scores[1] ? bonus + next_frame.scores[1].score : bonus + second_next_frame.scores[0].score
   end
 
   def spare_bonus(next_frame)
