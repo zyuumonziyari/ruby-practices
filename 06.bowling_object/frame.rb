@@ -7,17 +7,13 @@ class Frame
 
   attr_reader :shots
 
-  def initialize(frame_idx)
+  def initialize(frame_idx, marks)
     @shots = []
     @frame_idx = frame_idx
-  end
-
-  def add_shot(marks)
     marks.each do |mark|
       @shots << Shot.new(mark)
       break if complete?
     end
-    @shots.size
   end
 
   def score(frames)
