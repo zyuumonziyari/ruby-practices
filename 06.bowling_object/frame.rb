@@ -27,7 +27,7 @@ class Frame
   private
 
   def complete?
-    if @frame_idx != LAST_FRAME
+    if @frame_idx < LAST_FRAME
       strike? || @scores.size == 2
     else
       @scores.size == (strike? || spare? ? 3 : 2)
