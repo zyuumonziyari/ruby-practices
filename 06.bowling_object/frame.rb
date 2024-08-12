@@ -12,7 +12,7 @@ class Frame
     @frame_idx = frame_idx
     marks.each do |mark|
       @shots << Shot.new(mark)
-      break if complete?
+      break if shots_completed?
     end
   end
 
@@ -22,7 +22,7 @@ class Frame
 
   private
 
-  def complete?
+  def shots_completed?
     if @frame_idx < LAST_FRAME
       strike? || @shots.size == 2
     else
