@@ -4,8 +4,6 @@ require_relative 'shot'
 
 class Frame
   LAST_FRAME = 9
-  MAX_SHOTS_IN_LAST_FRAME = 3
-  MAX_SHOTS_IN_REGULAR_FRAME = 2
 
   attr_reader :scores
 
@@ -30,9 +28,10 @@ class Frame
 
   def complete?
     if @frame_idx != LAST_FRAME
-      strike? || @scores.size == MAX_SHOTS_IN_REGULAR_FRAME
+      strike? || @scores.size == 2
     else
-      @scores.size == (strike? || spare? ? MAX_SHOTS_IN_LAST_FRAME : MAX_SHOTS_IN_REGULAR_FRAME)
+      @scores.size == (strike? || spare? ? 3 : 2)
+
     end
   end
 
