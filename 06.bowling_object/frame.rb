@@ -23,7 +23,11 @@ class Frame
   private
 
   def shots_completed?
-    @frame_idx < LAST_FRAME ? strike? || @shots.size == 2 : @shots.size == (strike? || spare? ? 3 : 2)
+    if @frame_idx < LAST_FRAME
+      strike? || @shots.size == 2
+    else
+      @shots.size == (strike? || spare? ? 3 : 2)
+    end
   end
 
   def bonus_score(frames)
