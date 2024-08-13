@@ -8,8 +8,8 @@ class Frame
   attr_reader :shots
 
   def initialize(frame_idx, marks)
-    @shots = []
     @frame_idx = frame_idx
+    @shots = []
     marks.each do |mark|
       @shots << Shot.new(mark)
       break if shots_completed?
