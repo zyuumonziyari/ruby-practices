@@ -31,11 +31,10 @@ class Frame
   end
 
   def bonus_score(frames)
-    next_frame = frames[@frame_idx + 1]
-    second_next_frame = frames[@frame_idx + 2]
-
     return 0 if @frame_idx == LAST_FRAME
 
+    next_frame = frames[@frame_idx + 1]
+    second_next_frame = frames[@frame_idx + 2]
     if strike?
       strike_bonus(next_frame, second_next_frame)
     elsif spare?
