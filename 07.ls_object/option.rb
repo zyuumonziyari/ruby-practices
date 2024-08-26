@@ -4,7 +4,15 @@ class Option
   require 'optparse'
   
   def initialize
-    @options = { show_hidden: false, reverse_sort: false, show_long_format: false }
+    @options = default_options
+    parse_options
+  end
+  
+  def default_options
+    { show_hidden: false, reverse_sort: false, show_long_format: false }
+  end
+
+  def parse_options
     opt = OptionParser.new
     opt.on('-a') { @options[:show_hidden] = true }
     opt.on('-r') { @options[:reverse_sort] = true }
