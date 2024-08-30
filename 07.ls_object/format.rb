@@ -6,20 +6,20 @@ class Format
   def initialize(segments)
     @segments = segments
   end
-  
-  def output    
-    format_rows.each { |row| puts row}
+
+  def output
+    format_rows.each { |row| puts row }
   end
-  
+
   private
-  
+
   def calculate_max_column_widths(max_rows)
     (0...COLUMNS).map do |col|
       column_values = (0...max_rows).map { |row| @segments[row + col * max_rows] }
       column_values.compact.map(&:length).max || 0
     end
   end
-  
+
   def format_rows
     max_rows = (@segments.count / COLUMNS.to_f).ceil
     max_column_widths = calculate_max_column_widths(max_rows)

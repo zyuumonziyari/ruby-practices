@@ -4,7 +4,7 @@ require 'minitest/autorun'
 
 class Segment
   require_relative 'format'
-  
+
   def initialize(option, segments)
     @option = option
     @segments = sort_segments(filter_hidden_segments(segments))
@@ -15,7 +15,7 @@ class Segment
   end
 
   private
-  
+
   def filter_hidden_segments(segments)
     @option.show_hidden? ? segments : segments.reject { |entry| entry.start_with?('.') }
   end

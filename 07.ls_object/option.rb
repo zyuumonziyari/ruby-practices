@@ -2,12 +2,12 @@
 
 class Option
   require 'optparse'
-  
+
   def initialize
     @options = default_options
     parse_options
   end
-  
+
   def default_options
     { show_hidden: false, reverse_sort: false, show_long_format: false }
   end
@@ -19,15 +19,15 @@ class Option
     opt.on('-l') { @options[:show_long_format] = true }
     opt.parse!(ARGV)
   end
-  
+
   def show_hidden?
     @options[:show_hidden]
   end
-  
+
   def reverse_sort?
     @options[:reverse_sort]
   end
-  
+
   def show_long_format?
     @options[:show_long_format]
   end
