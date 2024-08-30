@@ -1,27 +1,26 @@
 # frozen_string_literal: true
 
+require 'minitest/autorun'
+
 class Segment
   require_relative 'format'
   
-  def initialize(option, files)
+  def initialize(option, segments)
     @option = option
-    @files = prepare_files(files)
-  end
-  
-  def prepare_files(files)
-    sort_files(files)
-    filter_hidden_files(sorted_files)
-  end
-  
-  def sort_files(files)
-    @option.reverse_sort? ? files.sort.reverse : files.sort
-  end
-  
-  def filter_hidden_files(files)
-    @option.show_hidden? ? files : files.reject { |entry| entry.start_with?('.') }
+    @segments = sort_segments(filter_hidden_segments(segments))
   end
 
   def output
-    Format.new.output(@files)
+    Format.new(@segments).output
+  end
+
+  private
+  
+  def filter_hidden_segments(segments)
+    @option.show_hidden? ? segments : segments.reject { |entry| entry.start_with?('.') }
+  end
+
+  def sort_segments(segments)
+    @option.reverse_sort? ? segments.sort.reverse : segments.sort
   end
 end
