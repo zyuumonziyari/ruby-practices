@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require 'minitest/autorun'
-
 class Segment
   require_relative 'format'
 
   def initialize(option, segments)
-    @option = option
-    @segments = sort_segments(filter_hidden_segments(segments))
+    @segments = filter_hidden_segments(option, segments)
   end
 
   def output
@@ -16,11 +13,12 @@ class Segment
 
   private
 
-  def filter_hidden_segments(segments)
-    @option.show_hidden? ? segments : segments.reject { |entry| entry.start_with?('.') }
+  def filter_hidden_segments(option, segments)
+    fileterd_segments = option.show_hidden? ? segments : segments.reject { |entry| entry.start_with?('.') }
+    sort_segments(option, fileterd_segments)
   end
 
-  def sort_segments(segments)
-    @option.reverse_sort? ? segments.sort.reverse : segments.sort
+  def sort_segments(option, segments)
+    option.reverse_sort? ? segments.sort.reverse : segments.sort
   end
 end
