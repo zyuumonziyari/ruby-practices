@@ -14,15 +14,15 @@ class DetailSegment < Segment
     '6' => 'rw-',
     '7' => 'rwx'
   }.freeze
-  
+
   def output
     puts "total #{calculate_block_num}"
+
     max_length_nlink = calculate_max_length(:nlink)
     max_length_size = calculate_max_length(:size)
-    @segments.each do |segment|  
+    @segments.each do |segment|
       segment_status = File::Stat.new(segment)
-      formtted_info = format_info(segment_status, segment, max_length_nlink, max_length_size)
-      puts formtted_info
+      puts format_info(segment_status, segment, max_length_nlink, max_length_size)
     end
   end
 
@@ -37,17 +37,17 @@ class DetailSegment < Segment
     filename = File.basename(segment)
     "#{directory_sign}#{permissions}  #{nlink} #{owner}  #{group}  #{size} #{mtime} #{filename}"
   end
-  
+
   private
-  
+
   def calculate_block_num
-    total_block_num = @segments.sum do |segment|
+    @segments.sum do |segment|
       segment_status = File::Stat.new(segment)
       block_num = (segment_status.size / BLOCKSIZE.to_f).ceil
       block_num * 8
     end
   end
-  
+
   def calculate_max_length(attribute)
     @segments.map do |segment|
       segment_status = File::Stat.new(segment)
