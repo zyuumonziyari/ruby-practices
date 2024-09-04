@@ -3,8 +3,8 @@
 class Segment
   require_relative 'format'
 
-  def initialize(option, segments)
-    @segments = filter_hidden_segments(option, segments)
+  def initialize(options, segments)
+    @segments = filter_hidden_segments(options, segments)
   end
 
   def output
@@ -13,12 +13,12 @@ class Segment
 
   private
 
-  def filter_hidden_segments(option, segments)
-    fileterd_segments = option.show_hidden? ? segments : segments.reject { |entry| entry.start_with?('.') }
-    sort_segments(option, fileterd_segments)
+  def filter_hidden_segments(options, segments)
+    fileterd_segments = options.show_hidden? ? segments : segments.reject { |entry| entry.start_with?('.') }
+    sort_segments(options, fileterd_segments)
   end
 
-  def sort_segments(option, segments)
-    option.reverse_sort? ? segments.sort.reverse : segments.sort
+  def sort_segments(options, segments)
+    options.reverse_sort? ? segments.sort.reverse : segments.sort
   end
 end
