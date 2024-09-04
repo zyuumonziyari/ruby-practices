@@ -14,61 +14,44 @@ class DetailSegment < Segment
     '6' => 'rw-',
     '7' => 'rwx'
   }.freeze
-
+  
   def output
-    @title_max_length = 0
-    @link_max_length = 0
-
     puts "total #{calculate_block_num}"
-
-    @segments.each do |segment|
-      file_status = File::Stat.new(segment)
-      output_formated_info(segment, file_status)
+    max_length_nlink = calculate_max_length(:nlink)
+    max_length_size = calculate_max_length(:size)
+    @segments.each do |segment|  
+      segment_status = File::Stat.new(segment)
+      formtted_info = format_info(segment_status, segment, max_length_nlink, max_length_size)
+      puts formtted_info
     end
   end
 
-  private
-
-  def output_formated_info(segment, file_status)
-    directory_sign = mark_directory_sign(segment)
-    permissions = determine_permissions(file_status)
-    nlink = calculate_nlink(file_status)
-    owner = Etc.getpwuid(file_status.uid).name
-    group = Etc.getgrgid(file_status.gid).name
-    size = calculate_size(file_status)
-    mtime = file_status.mtime.strftime('%m %d %H:%M')
+  def format_info(segment_status, segment, max_length_nlink, max_length_size)
+    directory_sign = File.directory?(segment) ? 'd' : '-'
+    permissions = segment_status.mode.to_s(8)[-3..].chars.map { |digit| PERMISSIONS[digit] }.join
+    nlink = segment_status.nlink.to_s.rjust(max_length_nlink)
+    owner = Etc.getpwuid(segment_status.uid).name
+    group = Etc.getgrgid(segment_status.gid).name
+    size = segment_status.size.to_s.rjust(max_length_size)
+    mtime = segment_status.mtime.strftime('%m %d %H:%M')
     filename = File.basename(segment)
-
-    puts "#{directory_sign}#{permissions}  #{nlink} #{owner}  #{group}  #{size} #{mtime} #{filename}"
+    "#{directory_sign}#{permissions}  #{nlink} #{owner}  #{group}  #{size} #{mtime} #{filename}"
   end
-
+  
+  private
+  
   def calculate_block_num
-    total_block_num = 0
-    @segments.each do |segment|
-      file_status = read_stat(segment)
-      block_num = (file_status.size / BLOCKSIZE.to_f).ceil
-      total_block_num += block_num * 8
+    total_block_num = @segments.sum do |segment|
+      segment_status = File::Stat.new(segment)
+      block_num = (segment_status.size / BLOCKSIZE.to_f).ceil
+      block_num * 8
     end
-    total_block_num
   end
-
-  def mark_directory_sign(segment)
-    File.directory?(segment) ? 'd' : '-'
-  end
-
-  def determine_permissions(file_status)
-    file_status.mode.to_s(8)[-3..].chars.map { |digit| PERMISSIONS[digit] }.join
-  end
-
-  def calculate_nlink(file_status)
-    link_length = file_status.nlink.to_s.length
-    @link_max_length = [@link_max_length, link_length].max
-    file_status.nlink.to_s.rjust(@link_max_length)
-  end
-
-  def calculate_size(file_status)
-    title_length = file_status.size.to_s.length
-    @title_max_length = [@title_max_length, title_length].max
-    file_status.size.to_s.rjust(@title_max_length)
+  
+  def calculate_max_length(attribute)
+    @segments.map do |segment|
+      segment_status = File::Stat.new(segment)
+      segment_status.send(attribute).to_s.length
+    end.max
   end
 end
