@@ -2,7 +2,7 @@
 
 class Option
   require 'optparse'
-  
+
   def initialize
     @options = default_options
     parse_options
@@ -11,15 +11,15 @@ class Option
   def show_hidden?
     @options[:show_hidden]
   end
-  
+
   def reverse_sort?
     @options[:reverse_sort]
   end
-  
+
   def show_long_format?
     @options[:show_long_format]
   end
-  
+
   private
 
   def default_options

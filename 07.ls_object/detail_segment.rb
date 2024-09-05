@@ -3,6 +3,7 @@
 class DetailSegment < Segment
   require 'etc'
 
+  COLUMNS = nil
   BLOCKSIZE = 8192
   PERMISSIONS = {
     '0' => '---',
