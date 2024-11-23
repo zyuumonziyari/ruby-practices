@@ -23,11 +23,13 @@ class DetailSegment < Segment
     max_length_size = calculate_max_length(:size)
     @segments.each do |segment|
       segment_status = File::Stat.new(segment)
-      puts format_info(segment_status, segment, max_length_nlink, max_length_size)
+      puts format_detail_segment(segment_status, segment, max_length_nlink, max_length_size)
     end
   end
-
-  def format_info(segment_status, segment, max_length_nlink, max_length_size)
+  
+  private
+  
+  def format_detail_segment(segment_status, segment, max_length_nlink, max_length_size)
     directory_sign = File.directory?(segment) ? 'd' : '-'
     permissions = segment_status.mode.to_s(8)[-3..].chars.map { |digit| PERMISSIONS[digit] }.join
     nlink = segment_status.nlink.to_s.rjust(max_length_nlink)
@@ -38,8 +40,6 @@ class DetailSegment < Segment
     filename = File.basename(segment)
     "#{directory_sign}#{permissions}  #{nlink} #{owner}  #{group}  #{size} #{mtime} #{filename}"
   end
-
-  private
 
   def calculate_block_num
     @segments.sum do |segment|
