@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-class SegmentFactory
-  require_relative 'option'
-  require_relative 'segment'
-  require_relative 'detail_segment'
+require_relative 'option'
+require_relative 'segment'
+require_relative 'detail_segment'
 
+class SegmentFactory
   def self.create(options, segments)
     options.show_long_format? ? DetailSegment.new(options, segments) : Segment.new(options, segments)
   end

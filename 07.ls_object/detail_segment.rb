@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class DetailSegment < Segment
-  require 'etc'
+require 'etc'
 
+class DetailSegment < Segment
   COLUMNS = nil
   BLOCKSIZE = 8192
   PERMISSIONS = {
