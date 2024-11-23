@@ -44,8 +44,7 @@ class DetailSegment < Segment
   def calculate_block_num
     @segments.sum do |segment|
       segment_status = File::Stat.new(segment)
-      block_num = (segment_status.size / BLOCKSIZE.to_f).ceil
-      block_num * 8
+      segment_status.blocks
     end
   end
 
