@@ -9,7 +9,7 @@ class Segment
   end
 
   def output
-    format_rows.each { |row| puts row }
+    puts format_rows
   end
 
   private
