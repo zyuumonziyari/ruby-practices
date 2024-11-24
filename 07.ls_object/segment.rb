@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class Segment
+  ## カレントディレクトリのファイルを読み込む
+  ##オプションがあれば、そのオプションに従いファイル名をフォーマットする
+  ## フォーマットしたファイル名を出力する
   COLUMNS = 3
   private_constant :COLUMNS
 

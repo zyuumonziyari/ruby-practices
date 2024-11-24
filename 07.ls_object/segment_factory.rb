@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'option'
 require_relative 'segment'
 require_relative 'detail_segment'
 
@@ -9,7 +8,3 @@ class SegmentFactory
     options.show_long_format? ? DetailSegment.new(options, segments) : Segment.new(options, segments)
   end
 end
-
-options = Option.new
-segments = Dir.entries(Dir.pwd)
-SegmentFactory.create(options, segments).output
