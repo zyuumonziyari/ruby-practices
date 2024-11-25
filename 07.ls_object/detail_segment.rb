@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 require 'etc'
+require_relative 'segment_helper'
 
-class DetailSegment < Segment
-  COLUMNS = nil
+class DetailSegment
+  include SegmentHelper
+
   BLOCKSIZE = 8192
   PERMISSIONS = {
     '0' => '---',
@@ -15,6 +17,10 @@ class DetailSegment < Segment
     '6' => 'rw-',
     '7' => 'rwx'
   }.freeze
+
+  def initialize(options, segments)
+    @segments = filter_hidden_segments(options, segments)
+  end
 
   def output
     puts "total #{calculate_block_num}"

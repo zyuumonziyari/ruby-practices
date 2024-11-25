@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
+require_relative 'segment_helper'
+
 class Segment
-  ## カレントディレクトリのファイルを読み込む
-  ##オプションがあれば、そのオプションに従いファイル名をフォーマットする
-  ## フォーマットしたファイル名を出力する
+  include SegmentHelper
+  
   COLUMNS = 3
-  private_constant :COLUMNS
 
   def initialize(options, segments)
     @segments = filter_hidden_segments(options, segments)
@@ -16,15 +16,6 @@ class Segment
   end
 
   private
-
-  def filter_hidden_segments(options, segments)
-    fileterd_segments = options.show_hidden? ? segments : segments.reject { |entry| entry.start_with?('.') }
-    sort_segments(options, fileterd_segments)
-  end
-
-  def sort_segments(options, segments)
-    options.reverse_sort? ? segments.sort.reverse : segments.sort
-  end
 
   def format_rows
     max_rows = (@segments.count / COLUMNS.to_f).ceil
