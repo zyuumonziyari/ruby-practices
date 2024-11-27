@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require_relative 'option'
-require_relative 'segment_factory'
+require_relative 'file_factory'
 
 options = Option.new
-segments = Dir.entries(Dir.pwd)
-SegmentFactory.create(options, segments).output
+files = Dir.entries(Dir.pwd)
+FileFactory.create(options, files).output

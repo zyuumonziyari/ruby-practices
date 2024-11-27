@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'etc'
-require_relative 'segment_helper'
+require_relative 'file_helper'
 
-class DetailSegment
-  include SegmentHelper
+class FileStat
+  include FileHelper
 
   BLOCKSIZE = 8192
   PERMISSIONS = {
@@ -18,32 +18,32 @@ class DetailSegment
     '7' => 'rwx'
   }.freeze
 
-  def initialize(options, segments)
-    @segments = filter_hidden_segments(options, segments)
+  def initialize(options, files)
+    @files = filter_hidden_files(options, files)
   end
 
   def output
-    file_stats = @segments.map { |segment| [segment, File::Stat.new(segment)] }.to_h
+    file_stats = @files.map { |file| [file, File::Stat.new(file)] }.to_h
     puts "total #{calculate_block_num(file_stats)}"
 
     max_length_nlink = calculate_max_length(file_stats, :nlink)
     max_length_size = calculate_max_length(file_stats, :size)
-    file_stats.each do |segment, stat|
-      puts format_detail_segment(stat, segment, max_length_nlink, max_length_size)
+    file_stats.each do |file, stat|
+      puts format_file_stat(stat, file, max_length_nlink, max_length_size)
     end
   end
   
   private
   
-  def format_detail_segment(stat, segment, max_length_nlink, max_length_size)
-    directory_sign = File.directory?(segment) ? 'd' : '-'
+  def format_file_stat(stat, file, max_length_nlink, max_length_size)
+    directory_sign = File.directory?(file) ? 'd' : '-'
     permissions = stat.mode.to_s(8)[-3..].chars.map { |digit| PERMISSIONS[digit] }.join
     nlink = stat.nlink.to_s.rjust(max_length_nlink)
     owner = Etc.getpwuid(stat.uid).name
     group = Etc.getgrgid(stat.gid).name
     size = stat.size.to_s.rjust(max_length_size)
     mtime = stat.mtime.strftime('%m %d %H:%M')
-    filename = File.basename(segment)
+    filename = File.basename(file)
     "#{directory_sign}#{permissions}  #{nlink} #{owner}  #{group}  #{size} #{mtime} #{filename}"
   end
 
