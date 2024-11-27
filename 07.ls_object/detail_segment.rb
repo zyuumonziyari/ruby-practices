@@ -23,41 +23,35 @@ class DetailSegment
   end
 
   def output
-    puts "total #{calculate_block_num}"
+    segment_stats = @segments.map { |segment| [segment, File::Stat.new(segment)] }.to_h
+    puts "total #{calculate_block_num(segment_stats)}"
 
-    max_length_nlink = calculate_max_length(:nlink)
-    max_length_size = calculate_max_length(:size)
-    @segments.each do |segment|
-      segment_status = File::Stat.new(segment)
-      puts format_detail_segment(segment_status, segment, max_length_nlink, max_length_size)
+    max_length_nlink = calculate_max_length(segment_stats, :nlink)
+    max_length_size = calculate_max_length(segment_stats, :size)
+    segment_stats.each do |segment, stat|
+      puts format_detail_segment(stat, segment, max_length_nlink, max_length_size)
     end
   end
   
   private
   
-  def format_detail_segment(segment_status, segment, max_length_nlink, max_length_size)
+  def format_detail_segment(stat, segment, max_length_nlink, max_length_size)
     directory_sign = File.directory?(segment) ? 'd' : '-'
-    permissions = segment_status.mode.to_s(8)[-3..].chars.map { |digit| PERMISSIONS[digit] }.join
-    nlink = segment_status.nlink.to_s.rjust(max_length_nlink)
-    owner = Etc.getpwuid(segment_status.uid).name
-    group = Etc.getgrgid(segment_status.gid).name
-    size = segment_status.size.to_s.rjust(max_length_size)
-    mtime = segment_status.mtime.strftime('%m %d %H:%M')
+    permissions = stat.mode.to_s(8)[-3..].chars.map { |digit| PERMISSIONS[digit] }.join
+    nlink = stat.nlink.to_s.rjust(max_length_nlink)
+    owner = Etc.getpwuid(stat.uid).name
+    group = Etc.getgrgid(stat.gid).name
+    size = stat.size.to_s.rjust(max_length_size)
+    mtime = stat.mtime.strftime('%m %d %H:%M')
     filename = File.basename(segment)
     "#{directory_sign}#{permissions}  #{nlink} #{owner}  #{group}  #{size} #{mtime} #{filename}"
   end
 
-  def calculate_block_num
-    @segments.sum do |segment|
-      segment_status = File::Stat.new(segment)
-      segment_status.blocks
-    end
+  def calculate_block_num(segment_stats)
+    segment_stats.values.sum(&:blocks)
   end
 
-  def calculate_max_length(attribute)
-    @segments.map do |segment|
-      segment_status = File::Stat.new(segment)
-      segment_status.send(attribute).to_s.length
-    end.max
+  def calculate_max_length(segment_stats, attribute)
+    segment_stats.values.map { |stat| stat.send(attribute).to_s.length }.max
   end
 end
