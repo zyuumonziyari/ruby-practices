@@ -23,12 +23,12 @@ class DetailSegment
   end
 
   def output
-    segment_stats = @segments.map { |segment| [segment, File::Stat.new(segment)] }.to_h
-    puts "total #{calculate_block_num(segment_stats)}"
+    file_stats = @segments.map { |segment| [segment, File::Stat.new(segment)] }.to_h
+    puts "total #{calculate_block_num(file_stats)}"
 
-    max_length_nlink = calculate_max_length(segment_stats, :nlink)
-    max_length_size = calculate_max_length(segment_stats, :size)
-    segment_stats.each do |segment, stat|
+    max_length_nlink = calculate_max_length(file_stats, :nlink)
+    max_length_size = calculate_max_length(file_stats, :size)
+    file_stats.each do |segment, stat|
       puts format_detail_segment(stat, segment, max_length_nlink, max_length_size)
     end
   end
@@ -47,11 +47,11 @@ class DetailSegment
     "#{directory_sign}#{permissions}  #{nlink} #{owner}  #{group}  #{size} #{mtime} #{filename}"
   end
 
-  def calculate_block_num(segment_stats)
-    segment_stats.values.sum(&:blocks)
+  def calculate_block_num(file_stats)
+    file_stats.values.sum(&:blocks)
   end
 
-  def calculate_max_length(segment_stats, attribute)
-    segment_stats.values.map { |stat| stat.send(attribute).to_s.length }.max
+  def calculate_max_length(file_stats, attribute)
+    file_stats.values.map { |stat| stat.send(attribute).to_s.length }.max
   end
 end
