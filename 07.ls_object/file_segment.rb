@@ -4,7 +4,7 @@ require_relative 'file_helper'
 
 class FileSegment
   include FileHelper
-  
+
   COLUMNS = 3
 
   def initialize(options, files)
