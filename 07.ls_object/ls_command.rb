@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'file_helper'
+require_relative 'ls_command_helper'
 
 class LsCommand
   include FileHelper

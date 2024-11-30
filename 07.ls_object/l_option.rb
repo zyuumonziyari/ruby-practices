@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'etc'
-require_relative 'file_helper'
+require_relative 'ls_command_helper'
 
 class LOption
   include FileHelper

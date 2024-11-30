@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module FileHelper
+module LsCommandHelper
   def filter_hidden_files(options, files)
     fileterd_files = options.show_hidden? ? files : files.reject { |entry| entry.start_with?('.') }
     sort_files(options, fileterd_files)
