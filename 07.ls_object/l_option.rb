@@ -4,9 +4,9 @@ require 'etc'
 require_relative 'ls_command_helper'
 
 class LOption
-  include FileHelper
+  extend LsCommandHelper
+  class << self
 
-  BLOCKSIZE = 8192
   PERMISSIONS = {
     '0' => '---',
     '1' => '--x',
@@ -18,12 +18,9 @@ class LOption
     '7' => 'rwx'
   }.freeze
 
-  def initialize(options, files)
-    @files = filter_hidden_files(options, files)
-  end
-
-  def output
-    file_stats = @files.map { |file| [file, File::Stat.new(file)] }.to_h
+  def output(options, files)
+    sorted_files = filter_hidden_files(options, files)
+    file_stats = sorted_files.map { |file| [file, File::Stat.new(file)] }.to_h
     puts "total #{calculate_block_num(file_stats)}"
 
     max_length_nlink = calculate_max_length(file_stats, :nlink)
@@ -54,4 +51,5 @@ class LOption
   def calculate_max_length(file_stats, attribute)
     file_stats.values.map { |stat| stat.send(attribute).to_s.length }.max
   end
+end
 end
