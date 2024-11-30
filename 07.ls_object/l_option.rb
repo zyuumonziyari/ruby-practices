@@ -3,7 +3,7 @@
 require 'etc'
 require_relative 'file_helper'
 
-class FileStat
+class LOption
   include FileHelper
 
   BLOCKSIZE = 8192

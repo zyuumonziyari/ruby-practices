@@ -2,7 +2,7 @@
 
 require_relative 'file_helper'
 
-class FileSegment
+class LsCommand
   include FileHelper
 
   COLUMNS = 3
