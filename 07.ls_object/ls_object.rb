@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 require_relative 'option'
-require_relative 'file_factory'
+require_relative 'ls_command'
+require_relative 'l_option'
 
 options = Option.new
 files = Dir.entries(Dir.pwd)
-FileFactory.create(options, files).output
+options.show_long_format? ? LOption.new(options, files).output : LsCommand.new(options, files).output
