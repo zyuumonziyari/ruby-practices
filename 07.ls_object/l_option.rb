@@ -51,6 +51,6 @@ class LOption
   end
 
   def calculate_max_length(attribute)
-    @file_stats.values.map { |stat| stat.send(attribute).to_s.length }.max
+    @file_stats.values.map { |stat| stat.public_send(attribute).to_s.length }.max
   end
 end
