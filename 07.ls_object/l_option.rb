@@ -5,7 +5,6 @@ require_relative 'ls_command_helper'
 
 class LOption
   extend LsCommandHelper
-  class << self
 
   PERMISSIONS = {
     '0' => '---',
@@ -18,14 +17,17 @@ class LOption
     '7' => 'rwx'
   }.freeze
 
-  def output(options, files)
-    sorted_files = filter_hidden_files(options, files)
-    file_stats = sorted_files.map { |file| [file, File::Stat.new(file)] }.to_h
-    puts "total #{calculate_block_num(file_stats)}"
+  def initialize(options, files)
+    sorted_files = self.class.filter_hidden_files(options, files)
+    @file_stats = sorted_files.map { |file| [file, File::Stat.new(file)] }.to_h
+  end
 
-    max_length_nlink = calculate_max_length(file_stats, :nlink)
-    max_length_size = calculate_max_length(file_stats, :size)
-    file_stats.each do |file, stat|
+  def output
+    puts "total #{calculate_block_num}"
+
+    max_length_nlink = calculate_max_length(:nlink)
+    max_length_size = calculate_max_length(:size)
+    @file_stats.each do |file, stat|
       puts format_file_stat(stat, file, max_length_nlink, max_length_size)
     end
   end
@@ -44,12 +46,11 @@ class LOption
     "#{directory_sign}#{permissions}  #{nlink} #{owner}  #{group}  #{size} #{mtime} #{filename}"
   end
 
-  def calculate_block_num(file_stats)
-    file_stats.values.sum(&:blocks)
+  def calculate_block_num
+    @file_stats.values.sum(&:blocks)
   end
 
-  def calculate_max_length(file_stats, attribute)
-    file_stats.values.map { |stat| stat.send(attribute).to_s.length }.max
+  def calculate_max_length(attribute)
+    @file_stats.values.map { |stat| stat.send(attribute).to_s.length }.max
   end
-end
 end
