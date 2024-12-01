@@ -6,7 +6,7 @@ class LsCommand
   extend LsCommandHelper
 
   COLUMNS = 3
-  
+
   def initialize(options, files)
     @sorted_files = self.class.filter_hidden_files(options, files)
     @max_rows = (@sorted_files.count / COLUMNS.to_f).ceil
