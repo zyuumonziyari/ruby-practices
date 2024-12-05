@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class LsCommand
+class BasicLsCommand
   COLUMNS = 3
 
   def initialize(files)

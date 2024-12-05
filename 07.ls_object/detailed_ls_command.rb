@@ -2,7 +2,7 @@
 
 require 'etc'
 
-class LOption
+class DetailedLsCommand
   PERMISSIONS = {
     '0' => '---',
     '1' => '--x',
