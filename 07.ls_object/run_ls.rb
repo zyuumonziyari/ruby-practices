@@ -6,4 +6,6 @@ require_relative 'l_option'
 
 options = Option.new
 files = Dir.entries(Dir.pwd)
-options.show_long_format? ? LOption.new(options, files).output : LsCommand.new(options, files).output
+filterd_files = options.show_hidden? ? files : files.reject { |entry| entry.start_with?('.') }
+sorted_files = options.reverse_sort? ? filterd_files.sort.reverse : filterd_files.sort
+options.show_long_format? ? LOption.new(options, sorted_files).output : LsCommand.new(options, sorted_files).output

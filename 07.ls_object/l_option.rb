@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
 require 'etc'
-require_relative 'ls_command_helper'
 
 class LOption
-  extend LsCommandHelper
-
   PERMISSIONS = {
     '0' => '---',
     '1' => '--x',
@@ -17,9 +14,8 @@ class LOption
     '7' => 'rwx'
   }.freeze
 
-  def initialize(options, files)
-    sorted_files = self.class.filter_hidden_files(options, files)
-    @file_stats = sorted_files.map { |file| [file, File::Stat.new(file)] }.to_h
+  def initialize(files)
+    @file_stats = files.map { |file| [file, File::Stat.new(file)] }.to_h
   end
 
   def output
