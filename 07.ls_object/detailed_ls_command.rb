@@ -24,13 +24,13 @@ class DetailedLsCommand
     max_length_nlink = calculate_max_length(:nlink)
     max_length_size = calculate_max_length(:size)
     @file_stats.each do |file, stat|
-      puts format_file_stat(stat, file, max_length_nlink, max_length_size)
+      puts format_file_stat(file, stat, max_length_nlink, max_length_size)
     end
   end
 
   private
 
-  def format_file_stat(stat, file, max_length_nlink, max_length_size)
+  def format_file_stat(file, stat, max_length_nlink, max_length_size)
     directory_sign = File.directory?(file) ? 'd' : '-'
     permissions = stat.mode.to_s(8)[-3..].chars.map { |digit| PERMISSIONS[digit] }.join
     nlink = stat.nlink.to_s.rjust(max_length_nlink)
